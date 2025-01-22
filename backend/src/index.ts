@@ -2,13 +2,21 @@ import { Hono } from 'hono'
 
 const app = new Hono()
 
-app.get('/', (c) => {
+app.post('/api/v1/signup', (c) => {
   return c.text('Hello Hono!')
 })
-app.post('/', (c) => c.text('POST /'))
-app.post('/', (c) => c.text('POST /'))
-app.post('/', (c) => c.text('POST /'))
-app.put('/', (c) => c.text('PUT /'))
+app.post('/api/v1/signin', (c) => {
+  return c.text('Hello Hono!')
+})
+app.post('/api/v1/blog', (c) => {
+  return c.text('Hello Hono!')
+})
+app.put('/api/v1/blog', (c) =>{
+  return c.text('Hello Hono!')
+})
+app.get('/api/v1/blog/:id', (c) => {
+  return c.text('Hello Hono!')
+})
 
 
 export default app
