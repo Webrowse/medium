@@ -1,4 +1,9 @@
 import { Hono } from 'hono'
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+// Connect to your Prisma Client
+
 
 const app = new Hono()
 
