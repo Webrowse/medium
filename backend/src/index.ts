@@ -12,6 +12,7 @@ const app = new Hono<{
   };
 }>();
 
+//Sign up route creates an entry and returns a JWT
 app.post("/api/v1/signup", async (c) => {
   const body = await c.req.json();
   const prisma = new PrismaClient({
@@ -33,28 +34,36 @@ app.post("/api/v1/signup", async (c) => {
   } catch (e) {
     console.log(`error: ${e}`);
   }
-  app.post("/api/v1/signin", async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-
-    const body = await c.req.json();
-    const user = await prisma.user.findUnique({
-      where: {
-        email: body.email,
-        password: body.password,
-      },
-    });
-
-    if (!user) {
-      c.status(403);
-      return c.json({ message: "Invalid credentials" });
-    }
-
-    const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ jwt });
-  });
 });
+
+//Sign in route checks credentials and returns a JWT if valid, otherwise returns 403
+app.post("/api/v1/signin", async (c) => {
+  const body = await c.req.json();
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+try {
+  const user = await prisma.user.findFirst({
+    where: {
+      email: body.email,
+      password: body.password,
+    },
+  });
+
+  if (!user) {
+    c.status(403); //unauthenticated
+    return c.json({ message: "Invalid credentials" });
+  }
+
+  const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+  return c.json({ jwt });
+}catch (e){
+  console.log(e);
+  c.status(411);
+  return c.text('Invalid')
+}
+});
+
 app.post("/api/v1/blog", (c) => {
   return c.text("Hello Hono!");
 });
