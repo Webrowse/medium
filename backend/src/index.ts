@@ -1,8 +1,6 @@
 import { Hono } from "hono";
-import { PrismaClient } from "@prisma/client/edge";
-import { withAccelerate } from "@prisma/extension-accelerate";
-import { decode, sign, verify } from "hono/jwt";
-
+import { userRouter } from "./routes/user";
+import { blogRouter } from "./routes/blog";
 // Connect to your Prisma Client
 
 const app = new Hono<{
@@ -13,57 +11,8 @@ const app = new Hono<{
 }>();
 
 //Sign up route creates an entry and returns a JWT
-app.post("/api/v1/signup", async (c) => {
-  const body = await c.req.json();
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        password: body.password,
-        name: body.name,
-      },
-    });
-
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-
-    return c.json({ jwt: token });
-  } catch (e) {
-    console.log(`error: ${e}`);
-  }
-});
-
-//Sign in route checks credentials and returns a JWT if valid, otherwise returns 403
-app.post("/api/v1/signin", async (c) => {
-  const body = await c.req.json();
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-try {
-  const user = await prisma.user.findFirst({
-    where: {
-      email: body.email,
-      password: body.password,
-    },
-  });
-
-  if (!user) {
-    c.status(403); //unauthenticated
-    return c.json({ message: "Invalid credentials" });
-  }
-
-  const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-  return c.json({ jwt });
-}catch (e){
-  console.log(e);
-  c.status(411);
-  return c.text('Invalid')
-}
-});
-
+app.route("/api/v1/user", userRouter);
+app.route("/api/v1/blog", blogRouter);
 app.post("/api/v1/blog", (c) => {
   return c.text("Hello Hono!");
 });
