@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { decode, sign, verify } from "hono/jwt";
+import { sign } from "hono/jwt";
+import {signupInput, signinInput} from "@adarsh23romy/blog-commons";
 
 type Bindings = {
     DATABASE_URL: string;
@@ -12,6 +13,11 @@ export const userRouter = new Hono<{Bindings: Bindings}>();
 
 userRouter.post("/signup", async (c) => {
     const body = await c.req.json();
+    const { success } = signupInput.safeParse(body);
+    if (!success) {
+      c.status(411);
+      return c.json({ message: "input ka charitra questionable hai" });
+    }
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
@@ -35,6 +41,11 @@ userRouter.post("/signup", async (c) => {
   //Sign in route checks credentials and returns a JWT if valid, otherwise returns 403
   userRouter.post("/signin", async (c) => {
     const body = await c.req.json();
+    const { success } = signinInput.safeParse(body);
+    if (!success) {
+      c.status(411);
+      return c.json({message : "Unexpected data entered"});
+    }
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
