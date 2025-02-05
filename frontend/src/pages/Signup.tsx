@@ -1,12 +1,12 @@
 import { Quote } from "../components/Quote"
-import { SignUpField } from "../components/SignUpField"
+import { Auth } from "../components/Auth"
 
 export const Signup = () => {
     return <div>
         <div className="grid grid-cols-2 ">
         
             <div> 
-                <SignUpField /> 
+                <Auth type="signup" /> 
             </div>
             <div className="invisible md:visible">
                 <Quote />

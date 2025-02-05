@@ -12,7 +12,7 @@ export function Quote() {
                     - Mary Poppins
                 </p>
                 <p className="text-sm text-slate-400 mt-1 ml-10 text-left">
-                   CEO | Puspa Panties
+                   CEO | Corp
                 </p>
                 </div>
             </div>
