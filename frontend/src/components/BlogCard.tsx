@@ -35,9 +35,6 @@ export const BlogCard = ({ authorName, title, content, publishedDate, id }: Blog
         <div className="text-slate-500 text-sm font-thin pl-2 pt-4">
             {`${Math.ceil(content.length / 100)} minute(s) read`}
         </div>
-        {/* <div className="bg-slate-200 h-1 w-full">
-
-        </div> */}
     </div>
     </Link>
 }
@@ -52,6 +49,6 @@ export function Avatar({ name, size = 6}: { name: string; size?: number }) {
     </div >);
 }
 
-function Circle() {
+export function Circle() {
     return <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
 }

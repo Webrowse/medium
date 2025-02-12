@@ -1,5 +1,5 @@
 import { SignupInput } from "@adarsh23romy/blog-commons";
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios";
 import { BACKEND_URL } from "../config";
@@ -76,14 +76,13 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
 interface LabelledInputType {
     label: string;
     placeholder: string;
-    // name: string;
-    // value?: string;
-    onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     type?: string;
 }
 
 function LabelledInput({ label, placeholder, onChange, type = "text" }: LabelledInputType) {
-    return <div>
+    return (
+    <div>
         <div>
             <label className="block mb-1 text-sm text-black font-bold pt-2">{label}</label>
             <input onChange={onChange} type={type || "text"} id="first_name" className="bg-gray-50 border 
@@ -91,4 +90,5 @@ function LabelledInput({ label, placeholder, onChange, type = "text" }: Labelled
             focus:border-blue-500 block w-full p-2.5 mb-3.5" placeholder={placeholder} required />
         </div>
     </div>
+    )
 }
